@@ -7,23 +7,28 @@ import { initializeKnowledgeBase } from "./services/rag.service.ts";
 
 const PORT = process.env.PORT || 5000;
 
+let isInitialized = false;
+
 const start = async (): Promise<void> => {
   try {
-    // 1. Connect Mongoose (for users collection)
-    await connectDB();
+    if (!isInitialized) {
+      // Connect DB
+      await connectDB();
 
-    // 2. Index knowledge base if not already done
-    //    First run: loads .txt → splits → embeds → stores in MongoDB
-    //    Subsequent runs: sees data exists, skips
-    await initializeKnowledgeBase();
+      // Initialize vector database
+      await initializeKnowledgeBase();
 
-    // 3. Start Express
+      isInitialized = true;
+
+      console.log("Database connected");
+      console.log("Knowledge base initialized");
+    }
+
+    // Start Express
     app.listen(PORT, () => {
-      console.log(` KKS Server is running!`);
-      console.log(` URL: http://localhost:${PORT}`);
-      console.log(` Node: ${process.version}`);
-      console.log(` Press Ctrl+C to stop`);
+      console.log(`KKS Server is running on port ${PORT}`);
     });
+
   } catch (error) {
     console.error("Failed to start server:", error);
     process.exit(1);
@@ -32,16 +37,4 @@ const start = async (): Promise<void> => {
 
 start();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+export default app;
