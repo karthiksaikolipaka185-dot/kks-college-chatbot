@@ -4,7 +4,7 @@ const EventsGallery = () => (
   <section className="py-20 bg-white">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-12">
-        <p className="text-sm uppercase tracking-wider text-[#7B1E2B] font-semibold mb-2">Life at EduReach</p>
+        <p className="text-sm uppercase tracking-wider text-[#7B1E2B] font-semibold mb-2">Life at KKS</p>
         <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">Events & Highlights</h2>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

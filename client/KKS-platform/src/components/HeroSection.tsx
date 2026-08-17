@@ -3,7 +3,7 @@ import { images, siteConfig } from "../data/content";
 export default function HeroSection() {
   return (
     <section id="hero" className="relative h-[85vh] min-h-[500px]">
-      <img src={images.hero} alt="EduReach Campus" className="absolute inset-0 w-full h-full object-cover" />
+      <img src={images.hero} alt="KKS Campus" className="absolute inset-0 w-full h-full object-cover" />
       <div className="absolute inset-0 bg-maroon/70" />
 
       <div className="relative z-10 h-full flex items-center">

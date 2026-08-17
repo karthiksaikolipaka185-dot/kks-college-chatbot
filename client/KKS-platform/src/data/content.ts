@@ -166,9 +166,9 @@ export const vapiFormContent = {
 
 // ---- CONTACT ----
 export const contactInfo = {
-  email: "admissions@edureach.edu.in",
+  email: "admissions@kks.edu.in",
   phone: "+91-9876543210",
-  general: "info@edureach.edu.in",
+  general: "info@kks.edu.in",
   address: "Hyderabad, Telangana, India",
 };
 

@@ -28,7 +28,7 @@ export default function FloatingChatButton() {
         className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-all duration-300 ${
           chatOpen ? "bg-gray-600 hover:bg-gray-700" : "bg-maroon hover:bg-maroon-dark"
         }`}
-        title={user ? "Chat with EduReach Bot" : "Login to chat"}
+        title={user ? "Chat with KKS Bot" : "Login to chat"}
       >
         {chatOpen ? (
           <MessageCircle className="w-6 h-6 text-white" />

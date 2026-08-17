@@ -27,7 +27,7 @@ export default function SignupPage() {
       // registerUser now returns { token, user } directly
       const data = await registerUser({ name, email, password, phone: phone || undefined });
       login(data.token);
-      toast.success("Account created! Welcome to EduReach.");
+      toast.success("Account created! Welcome to KKS College.");
       navigate("/");
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Registration failed");
@@ -46,7 +46,7 @@ export default function SignupPage() {
           </Link>
 
           <h1 className="font-heading text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
-          <p className="text-gray-500 mb-8">Join EduReach for unlimited access to AI chat & counseling calls</p>
+          <p className="text-gray-500 mb-8">Join KKS for unlimited access to AI chat & counseling calls</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -99,7 +99,7 @@ export default function SignupPage() {
         <div className="absolute inset-0 bg-maroon/60 flex items-center justify-center">
           <div className="text-center text-white p-8">
             <GraduationCap className="w-16 h-16 mx-auto mb-4" />
-            <h2 className="font-heading text-4xl font-bold mb-2">Join EduReach</h2>
+            <h2 className="font-heading text-4xl font-bold mb-2">Join KKS</h2>
             <p className="text-white/80">92% placement rate · Top recruiters · 25-acre campus</p>
           </div>
         </div>

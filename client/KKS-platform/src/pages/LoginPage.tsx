@@ -41,7 +41,7 @@ export default function LoginPage() {
         <div className="absolute inset-0 bg-maroon/60 flex items-center justify-center">
           <div className="text-center text-white p-8">
             <GraduationCap className="w-16 h-16 mx-auto mb-4" />
-            <h2 className="font-heading text-4xl font-bold mb-2">EduReach</h2>
+            <h2 className="font-heading text-4xl font-bold mb-2">KKS</h2>
             <p className="text-white/80">Your Gateway to Smarter Education</p>
           </div>
         </div>
@@ -55,7 +55,7 @@ export default function LoginPage() {
           </Link>
 
           <h1 className="font-heading text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-          <p className="text-gray-500 mb-8">Sign in to your EduReach account</p>
+          <p className="text-gray-500 mb-8">Sign in to your KKS account</p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
