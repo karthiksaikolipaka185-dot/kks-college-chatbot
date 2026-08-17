@@ -26,11 +26,12 @@ export const startCall = async (req: Request, res: Response, next: NextFunction)
     }
 
     const result = await initiateOutboundCall({
-        phoneNumber: phoneNumber.trim(),
-        userName: user.name,
-        preferredCourse,
-        userEmail: ""
+      phoneNumber: phoneNumber.trim(),
+      userName: user.name,
+      userEmail: user.email,
+      preferredCourse,
     });
+
 
     res.status(200).json({
       success: true,

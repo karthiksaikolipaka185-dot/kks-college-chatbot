@@ -16,6 +16,30 @@ interface VapiCallResponse {
   [key: string]: unknown;
 }
 
+/**
+ * Safely normalizes Indian phone numbers into E.164 format (+91XXXXXXXXXX)
+ * Prevents country code duplication (e.g., 919876543210 -> +919876543210, NOT +91919876543210)
+ */
+export const normalizeIndianPhone = (rawPhone: string): string => {
+  let cleaned = rawPhone.replace(/[\s\-\(\)]/g, "");
+
+  if (cleaned.startsWith("+")) {
+    return cleaned;
+  }
+
+  cleaned = cleaned.replace(/^0+/, "");
+
+  if (cleaned.length === 12 && cleaned.startsWith("91")) {
+    return `+${cleaned}`;
+  }
+
+  if (cleaned.length === 10) {
+    return `+91${cleaned}`;
+  }
+
+  return `+${cleaned}`;
+};
+
 export const initiateOutboundCall = async (payload: CallPayload): Promise<VapiCallResponse> => {
   const { phoneNumber, userName, userEmail, preferredCourse, queryTopic } = payload;
 
@@ -24,11 +48,13 @@ export const initiateOutboundCall = async (payload: CallPayload): Promise<VapiCa
   const VAPI_ASSISTANT_ID = process.env.VAPI_ASSISTANT_ID;
 
   if (!VAPI_API_KEY || !VAPI_PHONE_NUMBER_ID || !VAPI_ASSISTANT_ID) {
-    throw new Error("Vapi configuration missing. Check VAPI_API_KEY, VAPI_PHONE_NUMBER_ID, VAPI_ASSISTANT_ID in .env");
+    console.error("[VAPI SERVICE ERROR] Missing required Vapi environment variables (VAPI_API_KEY, VAPI_PHONE_NUMBER_ID, VAPI_ASSISTANT_ID)");
+    throw new Error("Vapi configuration missing on server.");
   }
 
-  // Format phone number — ensure +91 prefix for Indian numbers
-  const formattedPhone = phoneNumber.startsWith("+") ? phoneNumber : `+91${phoneNumber.replace(/^0+/, "")}`;
+  const formattedPhone = normalizeIndianPhone(phoneNumber);
+
+  console.log(`[VAPI SERVICE] Initiating outbound call to ${formattedPhone} for student: ${userName}`);
 
   const response = await fetch("https://api.vapi.ai/call", {
     method: "POST",
@@ -57,8 +83,12 @@ export const initiateOutboundCall = async (payload: CallPayload): Promise<VapiCa
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    console.error("Vapi API Error:", errorData);
-    throw new Error(`Vapi call failed with status ${response.status}: ${JSON.stringify(errorData)}`);
+    console.error("[VAPI API ERROR]", {
+      status: response.status,
+      statusText: response.statusText,
+      errorData,
+    });
+    throw new Error(`Vapi API error (${response.status}): ${JSON.stringify(errorData)}`);
   }
 
   const data = (await response.json()) as VapiCallResponse;
