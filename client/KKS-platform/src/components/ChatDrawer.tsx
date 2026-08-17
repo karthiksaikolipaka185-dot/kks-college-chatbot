@@ -26,7 +26,7 @@ export default function ChatDrawer({ open, onClose }: ChatDrawerProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: `Hi ${user?.name?.split(" ")[0] || "there"}! 👋 I'm KKS Bot. Ask me anything about courses, fees, admissions, or campus life if iam not responded according to your query please try after 24 hours because iam working on gemini free tier`,
+      text: `Hi ${user?.name?.split(" ")[0] || "there"}! 👋 I'm KKS Bot. Ask me anything about courses, fees, admissions, placements, or campus life.`,
       sender: "bot",
     },
   ]);
@@ -78,7 +78,7 @@ export default function ChatDrawer({ open, onClose }: ChatDrawerProps) {
             <Bot className="w-4 h-4 text-white" />
           </div>
           <div>
-            <h3 className="text-white font-semibold text-sm">EduReach Bot</h3>
+            <h3 className="text-white font-semibold text-sm">KKS Bot</h3>
             <p className="text-white/70 text-xs">Ask me anything</p>
           </div>
         </div>

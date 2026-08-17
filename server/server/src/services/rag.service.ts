@@ -3,10 +3,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { MongoClient } from "mongodb";
 import { createAgent, tool } from "langchain";
-import {
-  ChatGoogleGenerativeAI,
-  GoogleGenerativeAIEmbeddings,
-} from "@langchain/google-genai";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { ChatGroq } from "@langchain/groq";
 import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
 import { TextLoader } from "@langchain/classic/document_loaders/fs/text";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
@@ -59,7 +57,7 @@ export const initializeKnowledgeBase = async (): Promise<void> => {
   const client = await getMongoClient();
   const collection = client.db("edureach_db").collection("knowledge_docs");
 
-  const filePath = path.join(__dirname, "../../knowledge-base/edureach-knowledge.txt");
+  const filePath = path.join(__dirname, "../../knowledge-base/kks-knowledge.txt");
   const stats = fs.statSync(filePath);
   const fileMtime = stats.mtimeMs;
 
@@ -169,8 +167,16 @@ export const getRAGResponse = async (question: string): Promise<string> => {
     const vectorStore = await getVectorStore();
     const retrieve = createRetrieveTool(vectorStore);
 
-    const model = new ChatGoogleGenerativeAI({
-      model: "gemini-2.5-flash",
+    const groqApiKey = process.env.GROQ_API_KEY;
+
+    if (!groqApiKey || groqApiKey === "gsk_your_groq_api_key_here" || !groqApiKey.startsWith("gsk_")) {
+      console.error("[RAG Service Error] GROQ_API_KEY is missing or invalid in environment variables!");
+      throw new Error("GROQ_API_KEY is missing or invalid in environment variables.");
+    }
+
+    const model = new ChatGroq({
+      apiKey: groqApiKey,
+      model: "llama-3.3-70b-versatile",
       temperature: 0.7,
     });
 

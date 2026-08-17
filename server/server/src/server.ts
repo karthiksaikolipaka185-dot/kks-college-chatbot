@@ -16,7 +16,7 @@ const start = async (): Promise<void> => {
       await connectDB();
 
       // Initialize vector database
-      //await initializeKnowledgeBase();
+      await initializeKnowledgeBase();
 
       isInitialized = true;
 
