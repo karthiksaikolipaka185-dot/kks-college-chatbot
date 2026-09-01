@@ -51,9 +51,55 @@ const getVectorStore = async () => {
 };
 
 // ============================================
-// A) INDEXING — runs ONCE at server startup
+// A) INDEXING & VALIDATION — runs ONCE at server startup
 // ============================================
+let isGroqValidated = false;
+
+export const validateGroqConfig = async (): Promise<void> => {
+  if (isGroqValidated) return;
+
+  const groqApiKey = process.env.GROQ_API_KEY;
+  const groqModel = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
+
+  if (!groqApiKey || groqApiKey === "gsk_your_groq_api_key_here" || !groqApiKey.startsWith("gsk_")) {
+    console.error("[Groq Configuration Error]\nGROQ_API_KEY is missing or invalid in environment variables!");
+    throw new Error("GROQ_API_KEY is missing or invalid in environment variables.");
+  }
+
+  try {
+    const res = await fetch("https://api.groq.com/openai/v1/models", {
+      headers: {
+        Authorization: `Bearer ${groqApiKey}`,
+      },
+    });
+
+    if (!res.ok) {
+      console.error(`[Groq Configuration Error]\nConfigured Groq model is unavailable.\n\nModel:\n${groqModel}`);
+      throw new Error(`Groq API returned HTTP ${res.status}: ${res.statusText}`);
+    }
+
+    const data = (await res.json()) as { data?: Array<{ id: string; active?: boolean }> };
+    const availableModels = data.data?.map((m) => m.id) || [];
+
+    if (!availableModels.includes(groqModel)) {
+      console.error(`[Groq Configuration Error]\nConfigured Groq model is unavailable.\n\nModel:\n${groqModel}`);
+      throw new Error(`Configured Groq model '${groqModel}' is not accessible for the configured API key.`);
+    }
+
+    isGroqValidated = true;
+    console.log(` Groq configuration verified (Model: ${groqModel})`);
+  } catch (error: any) {
+    if (!error.message?.includes("Configured Groq model")) {
+      console.error(`[Groq Configuration Error]\nConfigured Groq model is unavailable.\n\nModel:\n${groqModel}`);
+    }
+    throw error;
+  }
+};
+
 export const initializeKnowledgeBase = async (): Promise<void> => {
+  // Validate Groq configuration on server startup
+  await validateGroqConfig();
+
   const client = await getMongoClient();
   const collection = client.db("edureach_db").collection("knowledge_docs");
 
@@ -164,19 +210,17 @@ const createRetrieveTool = (vectorStore: MongoDBAtlasVectorSearch) => {
 
 export const getRAGResponse = async (question: string): Promise<string> => {
   try {
+    await validateGroqConfig();
+
     const vectorStore = await getVectorStore();
     const retrieve = createRetrieveTool(vectorStore);
 
-    const groqApiKey = process.env.GROQ_API_KEY;
-
-    if (!groqApiKey || groqApiKey === "gsk_your_groq_api_key_here" || !groqApiKey.startsWith("gsk_")) {
-      console.error("[RAG Service Error] GROQ_API_KEY is missing or invalid in environment variables!");
-      throw new Error("GROQ_API_KEY is missing or invalid in environment variables.");
-    }
+    const groqApiKey = process.env.GROQ_API_KEY!;
+    const groqModel = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
 
     const model = new ChatGroq({
       apiKey: groqApiKey,
-      model: "llama-3.3-70b-versatile",
+      model: groqModel,
       temperature: 0.7,
     });
 
@@ -185,9 +229,9 @@ export const getRAGResponse = async (question: string): Promise<string> => {
       tools: [retrieve],
       systemPrompt:
         "You are Kks Bot, a helpful AI counselor for Kks College, Hyderabad. " +
-        "ALWAYS use the retrieve tool to search the knowledge base before answering. " +
-        "Be concise, friendly, and professional. " +
-        "If the information is not found, say: " +
+        "ALWAYS use the retrieve tool to search the knowledge base before answering any question. " +
+        "Only answer using the facts provided in the knowledge base retrieved by the retrieve tool. " +
+        "If the information is not found or if the question is unrelated to Kks College, say exactly: " +
         "'I don't have that information right now. Click Talk to Us to speak with a counselor.'",
     });
 
@@ -205,8 +249,15 @@ export const getRAGResponse = async (question: string): Promise<string> => {
     return typeof lastMessage.content === "string"
       ? lastMessage.content
       : JSON.stringify(lastMessage.content);
-  } catch (error) {
-    console.error(" RAG Agent Error:", error);
+  } catch (error: any) {
+    const groqModel = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
+    console.error("[RAG Agent Error]", {
+      provider: "Groq",
+      model: groqModel,
+      status: error?.status || error?.statusCode || "UNKNOWN",
+      code: error?.code || error?.error?.code || error?.name || "UNKNOWN",
+      message: error?.message || "Unknown error in RAG agent workflow",
+    });
     return "I'm having trouble right now. Please try again or click 'Talk to Us'.";
   }
 };

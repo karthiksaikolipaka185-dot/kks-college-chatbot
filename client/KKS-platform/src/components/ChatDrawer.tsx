@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { X, Send, Bot, User, Minus } from "lucide-react";
+import { X, Send, Bot, User, Minus, Mic } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { sendMessage } from "../services/chat.service";
 
@@ -12,6 +12,7 @@ interface Message {
 interface ChatDrawerProps {
   open: boolean;
   onClose: () => void;
+  onOpenVoice?: () => void;
 }
 
 const quickQuestions = [
@@ -21,7 +22,7 @@ const quickQuestions = [
   "How to apply for admissions?",
 ];
 
-export default function ChatDrawer({ open, onClose }: ChatDrawerProps) {
+export default function ChatDrawer({ open, onClose, onOpenVoice }: ChatDrawerProps) {
   const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -83,10 +84,20 @@ export default function ChatDrawer({ open, onClose }: ChatDrawerProps) {
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <button onClick={onClose} className="text-white/70 hover:text-white p-1 transition-colors duration-200">
+          {onOpenVoice && (
+            <button
+              onClick={onOpenVoice}
+              className="text-white/80 hover:text-white p-1.5 hover:bg-white/15 rounded-lg transition-colors duration-200"
+              title="Open Voice Assistant"
+              aria-label="Open Voice Assistant"
+            >
+              <Mic className="w-4 h-4 text-amber-300" />
+            </button>
+          )}
+          <button onClick={onClose} className="text-white/70 hover:text-white p-1 transition-colors duration-200" aria-label="Minimize Chat">
             <Minus className="w-4 h-4" />
           </button>
-          <button onClick={onClose} className="text-white/70 hover:text-white p-1 transition-colors duration-200">
+          <button onClick={onClose} className="text-white/70 hover:text-white p-1 transition-colors duration-200" aria-label="Close Chat">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -154,8 +165,20 @@ export default function ChatDrawer({ open, onClose }: ChatDrawerProps) {
           <input type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown}
             placeholder="Ask a question..." disabled={sending}
             className="flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-maroon text-sm disabled:opacity-50 transition-colors duration-200" />
+          {onOpenVoice && (
+            <button
+              onClick={onOpenVoice}
+              title="Voice Assistant"
+              aria-label="Open Voice Assistant"
+              className="w-9 h-9 bg-gray-100 text-maroon hover:bg-maroon/10 rounded-lg flex items-center justify-center transition-colors duration-200"
+            >
+              <Mic className="w-4 h-4" />
+            </button>
+          )}
           <button onClick={() => handleSend()} disabled={!input.trim() || sending}
-            className="w-9 h-9 bg-maroon text-white rounded-lg flex items-center justify-center hover:bg-maroon-dark disabled:opacity-50 transition-colors duration-200">
+            className="w-9 h-9 bg-maroon text-white rounded-lg flex items-center justify-center hover:bg-maroon-dark disabled:opacity-50 transition-colors duration-200"
+            aria-label="Send Message"
+          >
             <Send className="w-4 h-4" />
           </button>
         </div>

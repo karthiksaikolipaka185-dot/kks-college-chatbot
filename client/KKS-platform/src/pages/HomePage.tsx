@@ -13,11 +13,13 @@ import HiringStatsSection from "../components/HiringStatsSection";
 import Footer from "../components/Footer";
 import SignupPopup from "../components/SignupPopup";
 import CallPopup from "../components/CallPopup";
+import VoiceAssistant from "../components/VoiceAssistant";
 
 export default function HomePage() {
   const { user } = useAuth();
   const [showSignupPopup, setShowSignupPopup] = useState(false);
   const [showCallPopup, setShowCallPopup] = useState(false);
+  const [showVoiceAssistant, setShowVoiceAssistant] = useState(false);
 
   // When non-logged visitor scrolls to mentors section — show signup popup once per session
   const handleReachMentors = () => {
@@ -44,7 +46,10 @@ export default function HomePage() {
         <>
           <StudentLifeSection />
           <EventsGallery />
-          <CounselorCTA onOpenCall={() => setShowCallPopup(true)} />
+          <CounselorCTA
+            onOpenCall={() => setShowCallPopup(true)}
+            onOpenVoice={() => setShowVoiceAssistant(true)}
+          />
           <HiringStatsSection />
           <Footer />
         </>
@@ -71,7 +76,12 @@ export default function HomePage() {
 
       {/* Popups */}
       <SignupPopup show={showSignupPopup} onClose={() => setShowSignupPopup(false)} />
-      <CallPopup open={showCallPopup} onClose={() => setShowCallPopup(false)} />
+      <CallPopup
+        open={showCallPopup}
+        onClose={() => setShowCallPopup(false)}
+        onOpenVoice={() => setShowVoiceAssistant(true)}
+      />
+      <VoiceAssistant open={showVoiceAssistant} onClose={() => setShowVoiceAssistant(false)} />
     </div>
   );
 }
