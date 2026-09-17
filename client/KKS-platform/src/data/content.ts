@@ -136,7 +136,7 @@ export const campusFeatures = [
   { title: "Smart Campus", desc: "25-acre green campus, full Wi-Fi, smart classrooms, 500+ computers.", image: images.campus1 },
   { title: "Central Library", desc: "50,000+ books, digital library, 24/7 reading room.", image: images.collegeClassroom },
   { title: "Hostels & Dining", desc: "Separate hostels, AC/Non-AC rooms, veg & non-veg mess, gym.", image: images.campus2 },
-  { title: "Fests & Events", desc: "TechNova (Oct), Aarohan (Mar), EduSports (Feb), hackathons.", image: images.fest },
+  { title: "Fests & Events", desc: "TechNova (Oct), Aarohan (Mar), KKSSports (Feb), hackathons.", image: images.fest },
   { title: "Clubs & Societies", desc: "Coding, Robotics, AI, Literary, Photography, Music, NSS, NCC.", image: images.universityFest },
   { title: "Sports Complex", desc: "Cricket, football, basketball, tennis, volleyball, badminton.", image: images.collegeOutdoor },
 ];

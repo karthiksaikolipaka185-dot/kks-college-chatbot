@@ -4,7 +4,7 @@ import FloatingChatButton from "./components/FloatingChatButton";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 
 function WithNavbar({ children }: { children: ReactNode }) {
   return (
@@ -16,6 +16,9 @@ function WithNavbar({ children }: { children: ReactNode }) {
 }
 
 export default function App() {
+  useEffect(() => {
+    document.title = "KKS";
+  }, []);
   return (
     <>
       <Routes>

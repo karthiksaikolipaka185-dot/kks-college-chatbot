@@ -13,7 +13,7 @@ export default function HeroSection() {
           </p>
           <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl text-white font-bold leading-tight mb-6">
             Welcome to <br />
-            <span className="text-amber-300">{siteConfig.name} College</span>
+            <span className="text-amber-300">{siteConfig.name}</span>
           </h1>
           <p className="text-white/90 text-lg md:text-xl max-w-2xl mb-8">
             {siteConfig.tagline}. Premier engineering institution with 92% placement rate

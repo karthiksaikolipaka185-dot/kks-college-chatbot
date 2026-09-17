@@ -14,6 +14,10 @@ import { z } from "zod";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// ---- MongoDB Configuration ----
+const DB_NAME = process.env.DB_NAME || "edureach_db";
+const VECTOR_INDEX_NAME = process.env.VECTOR_INDEX_NAME || "edureachvectorindex";
+
 // ---- MongoDB native client ----
 let mongoClient: MongoClient | null = null;
 
@@ -40,11 +44,11 @@ const getEmbeddings = () => {
 // ---- Vector Store ----
 const getVectorStore = async () => {
   const client = await getMongoClient();
-  const collection = client.db("edureach_db").collection("knowledge_docs");
+  const collection = client.db(DB_NAME).collection("knowledge_docs");
 
   return new MongoDBAtlasVectorSearch(getEmbeddings(), {
     collection: collection as any,
-    indexName: "edureachvectorindex",
+    indexName: VECTOR_INDEX_NAME,
     textKey: "text",
     embeddingKey: "embedding",
   });
@@ -101,13 +105,13 @@ export const initializeKnowledgeBase = async (): Promise<void> => {
   await validateGroqConfig();
 
   const client = await getMongoClient();
-  const collection = client.db("edureach_db").collection("knowledge_docs");
+  const collection = client.db(DB_NAME).collection("knowledge_docs");
 
   const filePath = path.join(__dirname, "../../knowledge-base/kks-knowledge.txt");
   const stats = fs.statSync(filePath);
   const fileMtime = stats.mtimeMs;
 
-  const metadataCollection = client.db("edureach_db").collection("metadata");
+  const metadataCollection = client.db(DB_NAME).collection("metadata");
   const lastIndex = await metadataCollection.findOne({ key: "kb_last_index" });
 
   const docWithEmbedding = await collection.findOne({
@@ -158,7 +162,7 @@ export const initializeKnowledgeBase = async (): Promise<void> => {
   // EMBED + STORE
   const vectorStore = new MongoDBAtlasVectorSearch(embeddings, {
     collection: collection as any,
-    indexName: "edureachvectorindex",
+    indexName: VECTOR_INDEX_NAME,
     textKey: "text",
     embeddingKey: "embedding",
   });
