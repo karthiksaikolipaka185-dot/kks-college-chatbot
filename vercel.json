@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd client/KKS-platform && npm install && npm run build",
+  "outputDirectory": "client/KKS-platform/dist",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

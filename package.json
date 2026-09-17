@@ -1,0 +1,7 @@
+{
+  "name": "kks-college-chatbot",
+  "private": true,
+  "scripts": {
+    "build": "cd client/KKS-platform && npm install && npm run build"
+  }
+}
