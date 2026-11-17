@@ -1,73 +1,112 @@
-# React + TypeScript + Vite
+# KKS College Platform - Frontend Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive web application for KKS College featuring an interactive campus portal, an AI-powered conversational chatbot, and a browser-based AI voice counselor.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Overview
 
-## React Compiler
+The **KKS College Platform** client provides prospective and current students with an engaging digital campus experience. Through intelligent conversational interfaces, users can explore academic programs, admissions criteria, campus facilities, and student events, or connect directly with an AI voice counselor for guided assistance.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Interactive AI Chat Assistant:** Instant, context-aware answers to college inquiries powered by Retrieval-Augmented Generation (RAG).
+- **AI Voice Counselor:** Integrated browser voice assistance powered by Vapi for real-time spoken counseling and guidance.
+- **Campus Portal & Navigation:** Detailed showcases for campus events, academic programs, and student resources.
+- **Modern Responsive Design:** Fast, mobile-first interface styled with Tailwind CSS and Lucide icons.
+- **Client-Side Routing:** Seamless navigation with React Router.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Tech Stack
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **Framework:** [React 19](https://react.dev/)
+- **Build Tool:** [Vite](https://vite.dev/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Icons:** [Lucide React](https://lucide.dev/)
+- **Routing:** [React Router](https://reactrouter.com/)
+- **HTTP Client:** [Axios](https://axios-http.com/)
+- **Notifications:** [React Hot Toast](https://react-hot-toast.com/)
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (version 18.x or later recommended)
+- `npm` (comes bundled with Node.js)
+
+### Installation
+
+1. Navigate to the client directory:
+   ```bash
+   cd client/KKS-platform
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+### Development
+
+To start the Vite development server with Hot Module Replacement (HMR):
+
+```bash
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The application will typically be accessible at `http://localhost:5173`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Production Build
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+To build the client application for production:
+
+```bash
+npm run build
 ```
+
+This compiles TypeScript (`tsc -b`) and bundles assets into the `dist/` directory via Vite.
+
+To preview the production build locally:
+
+```bash
+npm run preview
+```
+
+### Code Quality & Linting
+
+To check code quality and lint rules across TypeScript and React files:
+
+```bash
+npm run lint
+```
+
+---
+
+## Project Structure
+
+```text
+client/KKS-platform/
+├── public/              # Static assets (favicons, SVG assets)
+├── src/
+│   ├── assets/          # Application media and styling assets
+│   ├── components/      # Reusable UI components (ChatDrawer, VoiceAssistant, etc.)
+│   ├── data/            # Static campus content and configuration
+│   ├── pages/           # Routed page views (HomePage, LoginPage, etc.)
+│   ├── App.tsx          # Root application component and layout
+│   └── main.tsx         # Application entry point
+├── package.json         # Client dependencies and npm scripts
+├── tsconfig.json        # TypeScript configuration
+└── vite.config.ts       # Vite build configuration
+```
+
+---
+
+## License
+
+This project is maintained for the KKS College platform.
