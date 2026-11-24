@@ -71,17 +71,9 @@ pipeline {
                     bat '''
                         @echo off
                         echo [INFO] Working directory: %CD%
-                        if exist package-lock.json (
-                            echo [INFO] package-lock.json detected. Executing clean installation (npm ci)...
-                            call npm ci
-                        ) else (
-                            echo [INFO] package-lock.json not found. Executing standard installation (npm install)...
-                            call npm install
-                        )
-                        if %ERRORLEVEL% neq 0 (
-                            echo [ERROR] Frontend dependency installation failed!
-                            exit /b %ERRORLEVEL%
-                        )
+                        echo [INFO] Installing frontend dependencies via npm ci...
+                        call npm ci
+                        if errorlevel 1 exit /b 1
                         echo [SUCCESS] Frontend dependencies installed successfully.
                     '''
                 }
@@ -94,12 +86,9 @@ pipeline {
                     bat '''
                         @echo off
                         echo [INFO] Working directory: %CD%
-                        echo [INFO] Executing frontend build (tsc -b && vite build)...
+                        echo [INFO] Executing frontend build...
                         call npm run build
-                        if %ERRORLEVEL% neq 0 (
-                            echo [ERROR] Frontend build failed!
-                            exit /b %ERRORLEVEL%
-                        )
+                        if errorlevel 1 exit /b 1
                         echo [SUCCESS] Frontend build completed successfully.
                     '''
                 }
@@ -112,17 +101,9 @@ pipeline {
                     bat '''
                         @echo off
                         echo [INFO] Working directory: %CD%
-                        if exist package-lock.json (
-                            echo [INFO] package-lock.json detected. Executing clean installation (npm ci)...
-                            call npm ci
-                        ) else (
-                            echo [INFO] package-lock.json not found. Executing standard installation (npm install)...
-                            call npm install
-                        )
-                        if %ERRORLEVEL% neq 0 (
-                            echo [ERROR] Backend dependency installation failed!
-                            exit /b %ERRORLEVEL%
-                        )
+                        echo [INFO] Installing backend dependencies via npm ci...
+                        call npm ci
+                        if errorlevel 1 exit /b 1
                         echo [SUCCESS] Backend dependencies installed successfully.
                     '''
                 }
@@ -135,12 +116,9 @@ pipeline {
                     bat '''
                         @echo off
                         echo [INFO] Working directory: %CD%
-                        echo [INFO] Executing backend build (tsc static type-check)...
+                        echo [INFO] Executing backend build...
                         call npm run build
-                        if %ERRORLEVEL% neq 0 (
-                            echo [ERROR] Backend build failed!
-                            exit /b %ERRORLEVEL%
-                        )
+                        if errorlevel 1 exit /b 1
                         echo [SUCCESS] Backend build completed successfully.
                     '''
                 }
