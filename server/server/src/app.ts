@@ -15,7 +15,8 @@ import chatRoutes from "./routes/chat.routes.ts";
 import authRoutes from "./routes/auth.routes.ts";
 import vapiRoutes from "./routes/vapi.routes.ts";
 import errorHandler from "./middleware/error-handler.middleware.ts";
-
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./config/swagger.ts";
 const app: Application = express();
 
 // Middleware
@@ -37,6 +38,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/vapi", vapiRoutes);
+// Swagger Documentation
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // 404
 app.use((_req: Request, res: Response) => {
