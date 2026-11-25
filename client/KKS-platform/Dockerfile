@@ -1,4 +1,4 @@
-# Stage 1: Build React + Vite production bundle
+# Stage 1: Build React + Vite production
 FROM node:24-alpine AS builder
 
 WORKDIR /app
