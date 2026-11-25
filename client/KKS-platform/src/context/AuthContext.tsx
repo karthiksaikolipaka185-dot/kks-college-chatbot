@@ -5,13 +5,14 @@ interface User {
   id: string;
   name: string;
   email: string;
-  phone?: string;
+  phone?: string | null;
+  avatar?: string | null;
 }
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (token: string) => void;
+  login: (token: string, userData?: User) => void;
   logout: () => void;
 }
 
@@ -27,7 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (token) {
       getMe()
         .then((data) => {
-          // data = { user: { id, name, email, phone } }
+          // data = { user: { id, name, email, phone, avatar? } }
           setUser(data.user);
         })
         .catch(() => {
@@ -41,9 +42,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Save token to localStorage and fetch user
-  const login = (token: string) => {
+  // Save token to localStorage and update user
+  const login = (token: string, userData?: User) => {
     localStorage.setItem("token", token);
+    if (userData) {
+      setUser(userData);
+      return;
+    }
     getMe()
       .then((data) => setUser(data.user))
       .catch(() => {

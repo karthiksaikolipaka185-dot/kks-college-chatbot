@@ -1,10 +1,14 @@
 import mongoose, { Schema } from "mongoose";
 import type { Document } from "mongoose";
+
 export interface IUser extends Document {
   name: string;
   email: string;
-  password: string;
-  phone?: string;
+  password?: string;
+  phone?: string | null;
+  googleId?: string;
+  avatar?: string | null;
+  authProvider?: "local" | "google";
   created_at: Date;
 }
 
@@ -31,7 +35,12 @@ const UserSchema: Schema<IUser> = new Schema({
 
   password: {
     type: String,
-    required: [true, "Password is required"],
+    required: [
+      function (this: IUser) {
+        return this.authProvider !== "google";
+      },
+      "Password is required",
+    ],
     minlength: [6, "Password must be at least 6 characters"],
   },
 
@@ -39,6 +48,23 @@ const UserSchema: Schema<IUser> = new Schema({
     type: String,
     trim: true,
     default: null,
+  },
+
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
+
+  avatar: {
+    type: String,
+    default: null,
+  },
+
+  authProvider: {
+    type: String,
+    enum: ["local", "google"],
+    default: "local",
   },
 
   created_at: {
