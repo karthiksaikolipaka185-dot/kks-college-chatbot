@@ -1,5 +1,6 @@
 services:
   backend:
+    image: kks-college-chatbot-backend:${KKS_IMAGE_TAG:-latest}
     build:
       context: ./server/server
       dockerfile: Dockerfile
@@ -7,7 +8,7 @@ services:
     expose:
       - "5000"
     env_file:
-      - ./server/server/.env
+      - ${KKS_BACKEND_ENV_FILE:-./server/server/.env}
     environment:
       PORT: "5000"
       NODE_ENV: production
@@ -23,6 +24,7 @@ services:
       - kks-network
 
   frontend:
+    image: kks-college-chatbot-frontend:${KKS_IMAGE_TAG:-latest}
     build:
       context: ./client/KKS-platform
       dockerfile: Dockerfile
