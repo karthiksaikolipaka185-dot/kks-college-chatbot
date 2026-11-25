@@ -15,15 +15,25 @@ npm install
 
 ## Running Tests
 Ensure the Docker Compose stack is running at `http://localhost:3000`, then run:
-```bash
-cd selenium-tests
-npm run test:ci
-```
-Optional custom target URL:
-```bash
-set SELENIUM_BASE_URL=http://localhost:3000
-npm run test:ci
-```
+
+- **Live Evaluation Demo (Visible Chrome + Mochawesome HTML Report)**:
+  ```bash
+  cd selenium-tests
+  npm run test:demo
+  ```
+  Opens a visible Chrome window, runs all 10 tests with short visual pauses, generates `selenium-tests/reports/selenium-report.html`, and opens the HTML report automatically in your default browser.
+
+- **Headless CI Mode (JUnit XML Report)**:
+  ```bash
+  cd selenium-tests
+  npm run test:ci
+  ```
+
+- **Headless Console Mode**:
+  ```bash
+  cd selenium-tests
+  npm test
+  ```
 
 ## Implemented Test Cases (10)
 1. **Homepage Load**: Verifies `#root` renders non-empty content at `/`.
@@ -38,7 +48,8 @@ npm run test:ci
 10. **Fallback Route & Responsive Layout**: Verifies unknown routes redirect to `/`, captures `homepage-verified.png`, and checks mobile hamburger menu at `375x812`.
 
 ## Reports & Screenshots
-- **JUnit XML Report**: `selenium-tests/reports/selenium-results.xml`
+- **Mochawesome HTML Report (Demo)**: `selenium-tests/reports/selenium-report.html`
+- **JUnit XML Report (Jenkins CI)**: `selenium-tests/reports/selenium-results.xml`
 - **Success Evidence Screenshot**: `selenium-tests/screenshots/homepage-verified.png`
 - **Failure Screenshots**: Automatically saved as `selenium-tests/screenshots/fail-<test_name>.png`
 

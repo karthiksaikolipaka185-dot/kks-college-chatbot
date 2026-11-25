@@ -5,11 +5,19 @@ const fs = require("fs");
 const path = require("path");
 
 const BASE_URL = process.env.SELENIUM_BASE_URL || "http://localhost:3000";
+const HEADLESS = process.env.SELENIUM_HEADLESS !== "false";
+const DEMO_DELAY_MS = Number(process.env.SELENIUM_DEMO_DELAY || 0);
 const SCREENSHOT_DIR = path.join(__dirname, "..", "screenshots");
 
 function ensureDir(dir) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
+  }
+}
+
+async function demoPause(driver) {
+  if (DEMO_DELAY_MS > 0) {
+    await driver.sleep(DEMO_DELAY_MS);
   }
 }
 
@@ -22,19 +30,23 @@ async function saveScreenshot(driver, fileName) {
 }
 
 describe("KKS College Chatbot — Selenium Browser Test Suite", function () {
-  this.timeout(30000);
+  this.timeout(60000);
   let driver;
 
   before(async function () {
     ensureDir(SCREENSHOT_DIR);
     const options = new chrome.Options();
-    options.addArguments(
-      "--headless=new",
-      "--no-sandbox",
-      "--disable-dev-shm-usage",
-      "--disable-gpu",
-      "--window-size=1366,768"
-    );
+    if (HEADLESS) {
+      options.addArguments(
+        "--headless=new",
+        "--no-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+        "--window-size=1366,768"
+      );
+    } else {
+      options.addArguments("--start-maximized");
+    }
 
     driver = await new Builder()
       .forBrowser("chrome")
@@ -60,6 +72,7 @@ describe("KKS College Chatbot — Selenium Browser Test Suite", function () {
     const root = await driver.wait(until.elementLocated(By.id("root")), 10000);
     const text = await root.getText();
     assert.ok(text.length > 0, "Expected #root to render application content");
+    await demoPause(driver);
   });
 
   it("2. Verify page title and expected application branding", async function () {
@@ -70,6 +83,7 @@ describe("KKS College Chatbot — Selenium Browser Test Suite", function () {
       10000
     );
     assert.strictEqual(await brand.isDisplayed(), true);
+    await demoPause(driver);
   });
 
   it("3. Verify navigation to the login page", async function () {
@@ -78,6 +92,7 @@ describe("KKS College Chatbot — Selenium Browser Test Suite", function () {
       until.elementLocated(By.css('nav a[href="/login"]')),
       10000
     );
+    await demoPause(driver);
     await loginLink.click();
     await driver.wait(until.urlContains("/login"), 10000);
     const heading = await driver.wait(
@@ -85,6 +100,7 @@ describe("KKS College Chatbot — Selenium Browser Test Suite", function () {
       10000
     );
     assert.strictEqual(await heading.isDisplayed(), true);
+    await demoPause(driver);
   });
 
   it("4. Verify login form fields are visible", async function () {
@@ -95,6 +111,7 @@ describe("KKS College Chatbot — Selenium Browser Test Suite", function () {
     assert.strictEqual(await emailInput.isDisplayed(), true);
     assert.strictEqual(await passwordInput.isDisplayed(), true);
     assert.strictEqual(await submitBtn.isDisplayed(), true);
+    await demoPause(driver);
   });
 
   it("5. Verify empty login form validation", async function () {
@@ -108,6 +125,7 @@ describe("KKS College Chatbot — Selenium Browser Test Suite", function () {
     await driver.wait(until.elementIsVisible(toastMsg), 5000);
     assert.strictEqual(await toastMsg.isDisplayed(), true);
     assert.ok((await driver.getCurrentUrl()).includes("/login"));
+    await demoPause(driver);
   });
 
   it("6. Verify invalid login email input validation without backend spam", async function () {
@@ -117,10 +135,12 @@ describe("KKS College Chatbot — Selenium Browser Test Suite", function () {
     const submitBtn = await driver.wait(until.elementLocated(By.css('button[type="submit"]')), 10000);
     await emailInput.sendKeys("not-a-valid-email");
     await passwordInput.sendKeys("Password123!");
+    await demoPause(driver);
     await submitBtn.click();
     const isValid = await driver.executeScript("return arguments[0].checkValidity();", emailInput);
     assert.strictEqual(isValid, false);
     assert.ok((await driver.getCurrentUrl()).includes("/login"));
+    await demoPause(driver);
   });
 
   it("7. Verify navigation to the registration page", async function () {
@@ -129,6 +149,7 @@ describe("KKS College Chatbot — Selenium Browser Test Suite", function () {
       until.elementLocated(By.css('a[href="/signup"]')),
       10000
     );
+    await demoPause(driver);
     await signupLink.click();
     await driver.wait(until.urlContains("/signup"), 10000);
     const heading = await driver.wait(
@@ -136,6 +157,7 @@ describe("KKS College Chatbot — Selenium Browser Test Suite", function () {
       10000
     );
     assert.strictEqual(await heading.isDisplayed(), true);
+    await demoPause(driver);
   });
 
   it("8. Verify registration form validation without creating an account", async function () {
@@ -149,6 +171,7 @@ describe("KKS College Chatbot — Selenium Browser Test Suite", function () {
     await driver.wait(until.elementIsVisible(toastMsg), 5000);
     assert.strictEqual(await toastMsg.isDisplayed(), true);
     assert.ok((await driver.getCurrentUrl()).includes("/signup"));
+    await demoPause(driver);
   });
 
   it("9. Verify protected feature redirects unauthenticated users to login", async function () {
@@ -157,9 +180,11 @@ describe("KKS College Chatbot — Selenium Browser Test Suite", function () {
       until.elementLocated(By.css('button[aria-label="Talk to KKS AI Voice Counselor"]')),
       10000
     );
+    await demoPause(driver);
     await voiceBtn.click();
     await driver.wait(until.urlContains("/login"), 10000);
     assert.ok((await driver.getCurrentUrl()).includes("/login"));
+    await demoPause(driver);
   });
 
   it("10. Verify unknown route fallback, responsive layout, and capture evidence screenshot", async function () {
@@ -169,6 +194,7 @@ describe("KKS College Chatbot — Selenium Browser Test Suite", function () {
     assert.strictEqual(currentUrl.replace(/\/$/, ""), BASE_URL.replace(/\/$/, ""));
 
     await saveScreenshot(driver, "homepage-verified.png");
+    await demoPause(driver);
 
     await driver.manage().window().setRect({ width: 375, height: 812 });
     const mobileBtn = await driver.wait(
@@ -176,6 +202,7 @@ describe("KKS College Chatbot — Selenium Browser Test Suite", function () {
       10000
     );
     assert.strictEqual(await mobileBtn.isDisplayed(), true);
+    await demoPause(driver);
     await driver.manage().window().setRect({ width: 1366, height: 768 });
   });
 });
