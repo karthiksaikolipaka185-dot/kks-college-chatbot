@@ -19,6 +19,7 @@ This repository is organized as a monorepo containing:
 - **Continuous Integration:** Jenkins is configured for automated Continuous Integration pipelines.
 - **Webhook Automation:** GitHub Webhooks notify the Jenkins server automatically whenever code is pushed to the repository.
 - **Automated Dependency Installation & Builds:** Jenkins automatically installs dependencies (`npm ci`) and builds both the frontend and backend applications to ensure continuous build stability.
+- **CI Verification:** Documentation-only commits can be used to verify automatic Jenkins pipeline execution through GitHub Webhooks.
 
 ---
 
