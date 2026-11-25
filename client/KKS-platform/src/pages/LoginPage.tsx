@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { GraduationCap, Mail, Lock, ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
 import { loginUser } from "../services/auth.service";
 import { useAuth } from "../context/AuthContext";
 import { images } from "../data/content";
+import GoogleAuthButton from "../components/GoogleAuthButton";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -12,6 +13,15 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const oauthError = searchParams.get("error");
+    if (oauthError) {
+      toast.error(oauthError);
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -79,6 +89,14 @@ export default function LoginPage() {
               {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
+
+          <div className="my-5 flex items-center gap-3">
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="text-xs uppercase tracking-wider text-gray-400 font-medium">or</span>
+            <div className="flex-1 h-px bg-gray-200" />
+          </div>
+
+          <GoogleAuthButton label="Continue with Google" />
 
           <p className="text-center text-sm text-gray-500 mt-6">
             Don't have an account?{" "}

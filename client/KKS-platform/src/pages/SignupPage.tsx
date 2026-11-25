@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { registerUser } from "../services/auth.service";
 import { useAuth } from "../context/AuthContext";
 import { images } from "../data/content";
+import GoogleAuthButton from "../components/GoogleAuthButton";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
@@ -86,6 +87,14 @@ export default function SignupPage() {
               {loading ? "Creating Account..." : "Create Account"}
             </button>
           </form>
+
+          <div className="my-5 flex items-center gap-3">
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="text-xs uppercase tracking-wider text-gray-400 font-medium">or</span>
+            <div className="flex-1 h-px bg-gray-200" />
+          </div>
+
+          <GoogleAuthButton label="Sign up with Google" />
 
           <p className="text-center text-sm text-gray-500 mt-6">
             Already have an account?{" "}

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { X, GraduationCap } from "lucide-react";
+import GoogleAuthButton from "./GoogleAuthButton";
 
 interface SignupPopupProps {
   show: boolean;
@@ -27,6 +28,9 @@ export default function SignupPopup({ show, onClose }: SignupPopupProps) {
             className="block w-full bg-maroon text-white py-3 rounded-lg font-semibold hover:bg-maroon-dark transition-colors duration-200 mb-3">
             Create Free Account
           </Link>
+          <div className="mb-4">
+            <GoogleAuthButton label="Continue with Google" onSuccess={onClose} />
+          </div>
           <p className="text-sm text-gray-500">
             Already have an account?{" "}
             <Link to="/login" onClick={onClose} className="text-maroon font-medium hover:underline">Sign In</Link>
