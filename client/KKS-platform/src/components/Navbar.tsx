@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, GraduationCap, LogOut } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { navLinks } from "../data/content";
-
+//
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, logout } = useAuth();
