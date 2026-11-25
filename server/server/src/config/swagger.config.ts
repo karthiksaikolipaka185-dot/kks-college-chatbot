@@ -173,6 +173,89 @@ export const swaggerSpec = {
         },
       },
     },
+    "/api/auth/google": {
+      post: {
+        tags: ["Authentication"],
+        summary: "Authenticate with Google OAuth",
+        description: "Exchanges a Google OAuth authorization code or verifies a Google ID token, creates or links the user account, and returns a signed JWT.",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/GoogleAuthRequest",
+              },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Google authentication successful",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/AuthSuccessResponse",
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Missing authorization code or credential",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
+          },
+          "401": {
+            description: "Invalid or expired Google credential",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
+          },
+        },
+      },
+      get: {
+        tags: ["Authentication"],
+        summary: "Redirect to Google OAuth Consent Screen",
+        description: "Initiates the redirect-based Google OAuth 2.0 login flow.",
+        responses: {
+          "302": {
+            description: "Redirects to Google OAuth 2.0 consent screen",
+          },
+        },
+      },
+    },
+    "/api/auth/google/config": {
+      get: {
+        tags: ["Authentication"],
+        summary: "Get Public Google OAuth Client Config",
+        description: "Returns the public Google OAuth Client ID configured on the server.",
+        responses: {
+          "200": {
+            description: "Client ID retrieved",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean", example: true },
+                    data: {
+                      type: "object",
+                      properties: {
+                        clientId: { type: "string", nullable: true },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
     "/api/auth/me": {
       get: {
         tags: ["Authentication"],
@@ -351,6 +434,14 @@ export const swaggerSpec = {
         properties: {
           email: { type: "string", format: "email", example: "student@example.com" },
           password: { type: "string", example: "Password123!" },
+        },
+      },
+      GoogleAuthRequest: {
+        type: "object",
+        properties: {
+          code: { type: "string", description: "Google OAuth 2.0 authorization code" },
+          credential: { type: "string", description: "Google Identity Services ID token" },
+          redirectUri: { type: "string", example: "postmessage" },
         },
       },
       AuthSuccessResponse: {

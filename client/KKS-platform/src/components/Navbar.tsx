@@ -38,7 +38,17 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-3">
           {user ? (
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">Hi, {user.name.split(" ")[0]}</span>
+              <div className="flex items-center gap-2">
+                {user.avatar && (
+                  <img
+                    src={user.avatar}
+                    alt={user.name}
+                    referrerPolicy="no-referrer"
+                    className="w-7 h-7 rounded-full object-cover border border-maroon/20"
+                  />
+                )}
+                <span className="text-sm text-gray-600">Hi, {user.name.split(" ")[0]}</span>
+              </div>
               <button onClick={handleLogout}
                 className="flex items-center gap-1 text-sm bg-maroon/10 text-maroon px-3 py-1.5 rounded-lg hover:bg-maroon hover:text-white transition-colors duration-200">
                 <LogOut className="w-4 h-4" /> Logout

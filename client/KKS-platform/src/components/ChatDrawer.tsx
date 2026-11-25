@@ -14,7 +14,7 @@ interface ChatDrawerProps {
   onClose: () => void;
   onOpenVoice?: () => void;
 }
-
+// this is chatdrawer
 const quickQuestions = [
   "What courses do you offer?",
   "Tell me about placements",

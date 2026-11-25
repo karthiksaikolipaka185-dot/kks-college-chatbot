@@ -14,12 +14,14 @@ import vapiRoutes from "./routes/vapi.routes.ts";
 import errorHandler from "./middleware/error-handler.middleware.ts";
 
 const app: Application = express();
+app.set("trust proxy", 1);
 
 // Middleware
 app.use(
   cors({
     origin: [
       "http://localhost:5173",
+      "http://localhost:3000",
       "https://kks-chatbot-frontend.vercel.app",
       ...(process.env.CLIENT_URL ? [process.env.CLIENT_URL] : []),
     ],
