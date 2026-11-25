@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Mic, MicOff, Volume2, VolumeX, X, RotateCcw, Sparkles, AlertCircle, Bot, User, Square } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { sendMessage } from "../services/chat.service";
-
+//
 interface VoiceAssistantProps {
   open: boolean;
   onClose: () => void;
