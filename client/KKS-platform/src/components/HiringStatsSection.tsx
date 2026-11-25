@@ -1,6 +1,6 @@
 import { topRecruiters, deptPlacements, images } from "../data/content";
 import { TrendingUp } from "lucide-react";
-
+//  
 export default function HiringStatsSection() {
   return (
     <section id="placements" className="py-20 bg-cream">
