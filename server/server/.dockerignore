@@ -1,0 +1,12 @@
+node_modules
+dist
+coverage
+tests
+scripts
+.git
+.gitignore
+.vercel
+.env
+.env.*
+test-results.xml
+*.log
