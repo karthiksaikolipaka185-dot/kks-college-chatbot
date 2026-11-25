@@ -6,3 +6,4 @@ build
 .vercel
 coverage
 *.log
+test-results.xml

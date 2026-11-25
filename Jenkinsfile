@@ -110,6 +110,22 @@ pipeline {
             }
         }
 
+        stage('Backend Unit Testing') {
+            steps {
+                dir('server/server') {
+                    bat '''
+                        @echo off
+                        echo [INFO] Working directory: %CD%
+                        echo [INFO] Executing backend unit tests with JUnit reporting...
+                        call npm run test:ci
+                        if errorlevel 1 exit /b 1
+                        if not exist test-results.xml exit /b 1
+                        echo [SUCCESS] Backend unit tests completed successfully.
+                    '''
+                }
+            }
+        }
+
         stage('Backend Build') {
             steps {
                 dir('server/server') {
@@ -140,6 +156,7 @@ pipeline {
             echo '=========================================================='
         }
         always {
+            junit testResults: 'server/server/test-results.xml', allowEmptyResults: true
             echo '[INFO] Post-build workspace cleanup...'
             cleanWs deleteDirs: true, notFailBuild: true
         }
