@@ -8,7 +8,7 @@ interface User {
   phone?: string | null;
   avatar?: string | null;
 }
-
+//
 interface AuthContextType {
   user: User | null;
   loading: boolean;
