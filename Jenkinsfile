@@ -385,6 +385,37 @@ pipeline {
                 '''
             }
         }
+
+        stage('Selenium UI Testing') {
+            when {
+                allOf {
+                    expression { return params.DEPLOY_APPLICATION == true }
+                    expression {
+                        def branch = env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
+                        return (branch == 'main' || branch == 'origin/main' || branch == '*/main') && env.IS_MAIN_ANCESTOR == 'true'
+                    }
+                }
+            }
+            steps {
+                dir('selenium-tests') {
+                    bat '''
+                        @echo off
+                        echo [INFO] Installing Selenium test dependencies via npm ci...
+                        call npm ci
+                        if errorlevel 1 exit /b 1
+                        echo [INFO] Running headless Chrome Selenium suite against %APP_URL%...
+                        set SELENIUM_BASE_URL=%APP_URL%
+                        call npm run test:ci
+                        if errorlevel 1 exit /b 1
+                        if not exist reports\\selenium-results.xml (
+                            echo [ERROR] Expected Selenium JUnit report reports\\selenium-results.xml was not generated!
+                            exit /b 1
+                        )
+                        echo [SUCCESS] Selenium UI tests completed successfully.
+                    '''
+                }
+            }
+        }
     }
 
     post {
@@ -409,6 +440,19 @@ pipeline {
                             currentBuild.result = 'FAILURE'
                         }
                     }
+                }
+                if (params.DEPLOY_APPLICATION && env.DEPLOYMENT_STARTED == 'true' && fileExists('selenium-tests/reports/selenium-results.xml')) {
+                    try {
+                        junit testResults: 'selenium-tests/reports/selenium-results.xml', allowEmptyResults: false
+                    } catch (err) {
+                        echo "[ERROR] Failed to publish Selenium JUnit report: ${err.message}"
+                        if (currentBuild.currentResult == 'SUCCESS') {
+                            currentBuild.result = 'FAILURE'
+                        }
+                    }
+                }
+                if (fileExists('selenium-tests/screenshots')) {
+                    archiveArtifacts artifacts: 'selenium-tests/screenshots/*.png', allowEmptyArchive: true
                 }
             }
         }

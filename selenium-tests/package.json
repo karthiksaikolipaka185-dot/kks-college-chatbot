@@ -1,0 +1,15 @@
+{
+  "name": "kks-selenium-tests",
+  "version": "1.0.0",
+  "description": "Automated headless Chrome Selenium WebDriver tests for KKS College Chatbot",
+  "private": true,
+  "scripts": {
+    "test": "mocha tests/**/*.test.js --timeout 30000",
+    "test:ci": "mocha tests/**/*.test.js --timeout 30000 --reporter mocha-junit-reporter --reporter-options mochaFile=./reports/selenium-results.xml"
+  },
+  "dependencies": {
+    "mocha": "^11.1.0",
+    "mocha-junit-reporter": "^2.2.1",
+    "selenium-webdriver": "^4.29.0"
+  }
+}
