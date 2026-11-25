@@ -78,18 +78,19 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo '[INFO] Checking out source code from configured SCM repository...'
-                checkout scm
                 script {
+                    def scmVars = checkout scm
                     env.GIT_SHORT_SHA = bat(script: '@git rev-parse --short HEAD', returnStdout: true).trim()
                     env.RELEASE_TAG = "build-${env.BUILD_NUMBER}-${env.GIT_SHORT_SHA}"
                     env.DEPLOYMENT_STARTED = 'false'
                     env.ROLLBACK_READY = 'false'
+                    env.RESOLVED_BRANCH = env.BRANCH_NAME ?: scmVars?.GIT_BRANCH ?: env.GIT_BRANCH ?: ''
                     def isMainAncestor = bat(
                         script: '@git merge-base --is-ancestor HEAD origin/main 2>nul && echo true || echo false',
                         returnStdout: true
                     ).trim()
                     env.IS_MAIN_ANCESTOR = isMainAncestor
-                    echo "[INFO] Commit SHA: ${env.GIT_SHORT_SHA} | Branch: ${env.BRANCH_NAME ?: env.GIT_BRANCH ?: 'unknown'} | MainAncestor: ${env.IS_MAIN_ANCESTOR}"
+                    echo "[INFO] Commit SHA: ${env.GIT_SHORT_SHA} | Branch: ${env.RESOLVED_BRANCH ?: 'unknown'} | MainAncestor: ${env.IS_MAIN_ANCESTOR}"
                 }
             }
         }
@@ -178,8 +179,8 @@ pipeline {
                 allOf {
                     expression { return params.DEPLOY_APPLICATION == true }
                     expression {
-                        def branch = env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
-                        return (branch == 'main' || branch == 'origin/main' || branch == '*/main') && env.IS_MAIN_ANCESTOR == 'true'
+                        def branch = env.RESOLVED_BRANCH ?: env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
+                        return (branch == 'main' || branch == 'origin/main' || branch == '*/main' || branch == 'refs/heads/main') && env.IS_MAIN_ANCESTOR == 'true'
                     }
                 }
             }
@@ -213,8 +214,8 @@ pipeline {
                 allOf {
                     expression { return params.DEPLOY_APPLICATION == true }
                     expression {
-                        def branch = env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
-                        return (branch == 'main' || branch == 'origin/main' || branch == '*/main') && env.IS_MAIN_ANCESTOR == 'true'
+                        def branch = env.RESOLVED_BRANCH ?: env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
+                        return (branch == 'main' || branch == 'origin/main' || branch == '*/main' || branch == 'refs/heads/main') && env.IS_MAIN_ANCESTOR == 'true'
                     }
                 }
             }
@@ -281,8 +282,8 @@ pipeline {
                 allOf {
                     expression { return params.DEPLOY_APPLICATION == true }
                     expression {
-                        def branch = env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
-                        return (branch == 'main' || branch == 'origin/main' || branch == '*/main') && env.IS_MAIN_ANCESTOR == 'true'
+                        def branch = env.RESOLVED_BRANCH ?: env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
+                        return (branch == 'main' || branch == 'origin/main' || branch == '*/main' || branch == 'refs/heads/main') && env.IS_MAIN_ANCESTOR == 'true'
                     }
                 }
             }
@@ -315,8 +316,8 @@ pipeline {
                 allOf {
                     expression { return params.DEPLOY_APPLICATION == true }
                     expression {
-                        def branch = env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
-                        return (branch == 'main' || branch == 'origin/main' || branch == '*/main') && env.IS_MAIN_ANCESTOR == 'true'
+                        def branch = env.RESOLVED_BRANCH ?: env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
+                        return (branch == 'main' || branch == 'origin/main' || branch == '*/main' || branch == 'refs/heads/main') && env.IS_MAIN_ANCESTOR == 'true'
                     }
                 }
             }
@@ -346,8 +347,8 @@ pipeline {
                 allOf {
                     expression { return params.DEPLOY_APPLICATION == true }
                     expression {
-                        def branch = env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
-                        return (branch == 'main' || branch == 'origin/main' || branch == '*/main') && env.IS_MAIN_ANCESTOR == 'true'
+                        def branch = env.RESOLVED_BRANCH ?: env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
+                        return (branch == 'main' || branch == 'origin/main' || branch == '*/main' || branch == 'refs/heads/main') && env.IS_MAIN_ANCESTOR == 'true'
                     }
                 }
             }
@@ -366,8 +367,8 @@ pipeline {
                 allOf {
                     expression { return params.DEPLOY_APPLICATION == true }
                     expression {
-                        def branch = env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
-                        return (branch == 'main' || branch == 'origin/main' || branch == '*/main') && env.IS_MAIN_ANCESTOR == 'true'
+                        def branch = env.RESOLVED_BRANCH ?: env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
+                        return (branch == 'main' || branch == 'origin/main' || branch == '*/main' || branch == 'refs/heads/main') && env.IS_MAIN_ANCESTOR == 'true'
                     }
                 }
             }
@@ -391,8 +392,8 @@ pipeline {
                 allOf {
                     expression { return params.DEPLOY_APPLICATION == true }
                     expression {
-                        def branch = env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
-                        return (branch == 'main' || branch == 'origin/main' || branch == '*/main') && env.IS_MAIN_ANCESTOR == 'true'
+                        def branch = env.RESOLVED_BRANCH ?: env.BRANCH_NAME ?: env.GIT_BRANCH ?: ''
+                        return (branch == 'main' || branch == 'origin/main' || branch == '*/main' || branch == 'refs/heads/main') && env.IS_MAIN_ANCESTOR == 'true'
                     }
                 }
             }
